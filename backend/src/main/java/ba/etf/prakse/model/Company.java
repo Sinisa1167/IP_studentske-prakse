@@ -3,6 +3,7 @@ package ba.etf.prakse.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "companies")
@@ -34,6 +35,7 @@ public class Company {
     @Column(nullable = false)
     private Boolean active = true;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Internship> internships;
 }

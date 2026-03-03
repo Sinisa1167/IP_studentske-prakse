@@ -148,31 +148,33 @@ public class AiRecommendationService {
 
 
     private String callGeminiApi(String prompt) throws Exception {
-        String requestBody = "{\n" +
-                "  \\\"model\\\": \\\"google/gemini-2.0-flash-001\\\",\n" +
-                "  \"messages\": [\n" +
-                "    {\"role\": \"user\", \"content\": " + objectMapper.writeValueAsString(prompt) + "}\n" +
-                "  ]\n" +
-                "}";
+    String requestBody = objectMapper.writeValueAsString(
+        java.util.Map.of(
+            "model", "google/gemini-2.0-flash-001",
+            "messages", java.util.List.of(
+                java.util.Map.of("role", "user", "content", prompt)
+            )
+        )
+    );
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + apiKey)
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(apiUrl))
+            .header("Content-Type", "application/json")
+            .header("Authorization", "Bearer " + apiKey)
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+            .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("AI API greška: " + response.body());
-        }
-
-        JsonNode root = objectMapper.readTree(response.body());
-        return root.path("choices").get(0)
-                .path("message").path("content").asText();
+    if (response.statusCode() != 200) {
+        throw new RuntimeException("AI API greška: " + response.body());
     }
+
+    JsonNode root = objectMapper.readTree(response.body());
+    return root.path("choices").get(0)
+            .path("message").path("content").asText();
+}
 
     private List<AiRecommendation> parseAndSave(String aiResponse, Student student,
                                                   List<Internship> internships) throws Exception {

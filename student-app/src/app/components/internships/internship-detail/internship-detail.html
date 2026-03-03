@@ -1,1 +1,85 @@
-<p>internship-detail works!</p>
+<div class="detail-container" *ngIf="internship">
+  <div class="header">
+    <button mat-icon-button routerLink="/dashboard/internships">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>{{ internship.title }}</h1>
+  </div>
+
+  <div class="content-grid">
+    <mat-card class="main-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>business</mat-icon>
+        <mat-card-title>{{ internship.company.name }}</mat-card-title>
+        <mat-card-subtitle>{{ internship.company.address }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-divider></mat-divider>
+
+        <div class="section">
+          <h3><mat-icon>description</mat-icon> Opis prakse</h3>
+          <p>{{ internship.description }}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="section">
+          <h3><mat-icon>rule</mat-icon> Uslovi i zahtjevi</h3>
+          <p>{{ internship.conditions }}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="section">
+          <h3><mat-icon>code</mat-icon> Tehnologije</h3>
+          <mat-chip-set>
+            <mat-chip *ngFor="let tech of internship.technologies" color="primary">
+              {{ tech.name }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="section dates">
+          <div>
+            <h3><mat-icon>event</mat-icon> Početak</h3>
+            <p>{{ internship.startDate | date:'dd.MM.yyyy' }}</p>
+          </div>
+          <div>
+            <h3><mat-icon>event_busy</mat-icon> Kraj</h3>
+            <p>{{ internship.endDate | date:'dd.MM.yyyy' }}</p>
+          </div>
+        </div>
+
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary"
+                (click)="apply()"
+                [disabled]="alreadyApplied || applying">
+          <mat-icon>{{ alreadyApplied ? 'check' : 'send' }}</mat-icon>
+          {{ alreadyApplied ? 'Već ste prijavljeni' : 'Prijavi se' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="company-card">
+      <mat-card-header>
+        <mat-card-title>O kompaniji</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ internship.company.description }}</p>
+        <div class="contact">
+          <mat-icon>email</mat-icon>
+          <span>{{ internship.company.contactEmail }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="loading" *ngIf="!internship">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>

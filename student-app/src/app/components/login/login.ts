@@ -50,9 +50,15 @@ export class LoginComponent {
     this.error = '';
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
-      },
+      next: (response) => {
+  if (response.role !== 'STUDENT') {
+    this.error = 'Pristup dozvoljen samo studentima';
+    this.loading = false;
+    this.authService.logout();
+    return;
+  }
+  this.router.navigate(['/dashboard']);
+},
       error: (err) => {
         this.error = 'Pogrešan username ili password';
         this.loading = false;

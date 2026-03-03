@@ -1,1 +1,98 @@
-<p>work-diary-list works!</p>
+<div class="diary-container">
+  <h1>Dnevnik rada</h1>
+
+  <!-- Odabir prakse -->
+  <mat-card class="select-card" *ngIf="applications.length === 0">
+    <mat-card-content>
+      <div class="empty-state">
+        <mat-icon>info</mat-icon>
+        <p>Nemate prihvaćenih prijava na prakse. Dnevnik rada možete popunjavati samo za prihvaćene prakse.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="applications.length > 0">
+    <h2>Odaberite praksu</h2>
+    <div class="internship-chips">
+      <button mat-stroked-button
+              *ngFor="let app of applications"
+              [color]="selectedInternshipId === app.internship.id ? 'primary' : ''"
+              (click)="selectInternship(app)">
+        {{ app.internship.title }} — {{ app.internship.company.name }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedInternshipId">
+    <div class="diary-header">
+      <h2>{{ selectedInternshipTitle }}</h2>
+      <button mat-raised-button color="primary" (click)="openForm()">
+        <mat-icon>add</mat-icon>
+        Dodaj unos
+      </button>
+    </div>
+
+    <!-- Forma -->
+    <mat-card class="form-card" *ngIf="showForm">
+      <mat-card-header>
+        <mat-card-title>{{ editingEntry ? 'Uredi unos' : 'Novi unos' }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="entryForm">
+          <mat-form-field appearance="outline" class="small-width">
+            <mat-label>Sedmica br.</mat-label>
+            <input matInput type="number" formControlName="weekNumber" min="1">
+            <mat-error>Sedmica je obavezna</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Aktivnosti</mat-label>
+            <textarea matInput formControlName="activities" rows="4"
+                      placeholder="Opišite aktivnosti tokom ove sedmice..."></textarea>
+            <mat-error>Aktivnosti su obavezne</mat-error>
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="save()" [disabled]="entryForm.invalid">
+          <mat-icon>save</mat-icon>
+          Sačuvaj
+        </button>
+        <button mat-button (click)="closeForm()">
+          <mat-icon>cancel</mat-icon>
+          Otkaži
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <div class="spinner-container" *ngIf="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading">
+      <div *ngIf="entries.length === 0" class="empty-state">
+        <mat-icon>book</mat-icon>
+        <p>Nema unesenih sedmica. Dodajte prvi unos!</p>
+      </div>
+
+      <mat-card class="entry-card" *ngFor="let entry of entries">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>calendar_today</mat-icon>
+          <mat-card-title>Sedmica {{ entry.weekNumber }}</mat-card-title>
+          <mat-card-subtitle>{{ entry.createdAt | date:'dd.MM.yyyy HH:mm' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ entry.activities }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-icon-button color="primary" (click)="openForm(entry)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="delete(entry.id!)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

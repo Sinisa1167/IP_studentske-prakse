@@ -1,1 +1,76 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <h1 class="welcome">
+    Dobrodošli, {{ student?.firstName }} {{ student?.lastName }}!
+  </h1>
+
+  <div class="cards-grid">
+
+    <mat-card class="stat-card" routerLink="/dashboard/internships">
+      <mat-card-content>
+        <div class="stat-icon blue">
+          <mat-icon>work</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ internshipCount }}</span>
+          <span class="stat-label">Dostupnih praksi</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" routerLink="/dashboard/recommendations">
+      <mat-card-content>
+        <div class="stat-icon green">
+          <mat-icon>psychology</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ recommendationCount }}</span>
+          <span class="stat-label">AI Preporuka</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" routerLink="/dashboard/cv">
+      <mat-card-content>
+        <div class="stat-icon orange">
+          <mat-icon>description</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ applicationCount }}</span>
+          <span class="stat-label">Mojih prijava</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" routerLink="/dashboard/work-diary">
+      <mat-card-content>
+        <div class="stat-icon purple">
+          <mat-icon>book</mat-icon>
+        </div>
+        <div class="stat-info">
+          <mat-icon class="arrow">arrow_forward</mat-icon>
+          <span class="stat-label">Dnevnik rada</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <div class="quick-actions">
+    <h2>Brze akcije</h2>
+    <div class="actions-row">
+      <button mat-raised-button color="primary" routerLink="/dashboard/internships">
+        <mat-icon>search</mat-icon>
+        Pretraži prakse
+      </button>
+      <button mat-raised-button color="accent" routerLink="/dashboard/recommendations">
+        <mat-icon>psychology</mat-icon>
+        Generiši AI preporuke
+      </button>
+      <button mat-raised-button routerLink="/dashboard/cv">
+        <mat-icon>edit</mat-icon>
+        Uredi CV
+      </button>
+    </div>
+  </div>
+
+</div>

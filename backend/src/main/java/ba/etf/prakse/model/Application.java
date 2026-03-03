@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "applications")
@@ -30,6 +31,7 @@ public class Application {
     @Column(name = "applied_at", nullable = false)
     private LocalDateTime appliedAt = LocalDateTime.now();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private List<Evaluation> evaluations;
 }

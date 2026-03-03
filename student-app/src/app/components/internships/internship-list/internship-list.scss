@@ -1,0 +1,55 @@
+.internship-container {
+  max-width: 1100px;
+  margin: 0 auto;
+
+  h1 {
+    color: #1565c0;
+    margin-bottom: 24px;
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+
+  .search-field {
+    flex: 2;
+    min-width: 200px;
+  }
+
+  .tech-filter {
+    flex: 1;
+    min-width: 180px;
+  }
+}
+
+.internship-table {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+  th {
+    background: #1565c0;
+    color: white;
+    font-weight: 600;
+  }
+
+  .table-row:hover {
+    background: #e3f2fd;
+    cursor: pointer;
+  }
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+mat-chip {
+  font-size: 0.75rem !important;
+}

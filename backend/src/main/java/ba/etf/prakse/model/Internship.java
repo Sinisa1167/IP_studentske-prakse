@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "internships")
@@ -46,6 +47,7 @@ public class Internship {
     )
     private List<Technology> technologies;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL)
     private List<Application> applications;
 }
