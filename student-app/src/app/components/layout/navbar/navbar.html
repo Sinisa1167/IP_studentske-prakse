@@ -1,0 +1,53 @@
+<mat-sidenav-container class="sidenav-container">
+
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="sidenav-header">
+      <mat-icon>school</mat-icon>
+      <span>Studentske Prakse</span>
+    </div>
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link"
+         [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Početna</span>
+      </a>
+
+      <a mat-list-item routerLink="/dashboard/internships" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>work</mat-icon>
+        <span matListItemTitle>Prakse</span>
+      </a>
+
+      <a mat-list-item routerLink="/dashboard/cv" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>description</mat-icon>
+        <span matListItemTitle>Moj CV</span>
+      </a>
+
+      <a mat-list-item routerLink="/dashboard/recommendations" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>psychology</mat-icon>
+        <span matListItemTitle>AI Preporuke</span>
+      </a>
+
+      <a mat-list-item routerLink="/dashboard/work-diary" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>book</mat-icon>
+        <span matListItemTitle>Dnevnik rada</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="content">
+    <mat-toolbar color="primary">
+      <span class="toolbar-spacer"></span>
+      <mat-icon>person</mat-icon>
+      <span class="username">{{ username }}</span>
+      <button mat-icon-button (click)="logout()" matTooltip="Odjava">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="page-content">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
