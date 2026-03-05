@@ -24,8 +24,8 @@ export class StudentService {
   }
 
   uploadPhoto(id: number, file: File): Observable<string> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post<string>(`${this.apiUrl}/students/${id}/photo`, formData);
-  }
+  const formData = new FormData();
+  formData.append('file', file);
+  return this.http.post(`${this.apiUrl}/students/${id}/photo`, formData, { responseType: 'text' });
+}
 }

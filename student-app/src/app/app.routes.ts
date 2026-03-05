@@ -35,7 +35,12 @@ export const routes: Routes = [
       {
         path: 'work-diary',
         loadComponent: () => import('./components/work-diary/work-diary-list/work-diary-list').then(m => m.WorkDiaryList)
-      }
+      },
+{
+  path: 'applications',
+  loadComponent: () => import('./components/applications/application-list/application-list')
+    .then(m => m.ApplicationList)
+}
     ]
   },
   { path: '**', redirectTo: 'login' }

@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { Component, OnInit } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,12 +11,11 @@ import { AuthService } from '../../../services/auth';
   selector: 'app-navbar',
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    MatToolbarModule,
     MatSidenavModule,
+    MatToolbarModule,
     MatListModule,
     MatIconModule,
     MatButtonModule
@@ -25,12 +23,22 @@ import { AuthService } from '../../../services/auth';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {
-  username = localStorage.getItem('username') || '';
+export class Navbar implements OnInit {
+  username = '';
+  sidenavOpened = true;
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  ngOnInit(): void {
+    this.username = localStorage.getItem('username') || '';
+  }
+
+  toggleSidenav(): void {
+    this.sidenavOpened = !this.sidenavOpened;
+  }
+
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

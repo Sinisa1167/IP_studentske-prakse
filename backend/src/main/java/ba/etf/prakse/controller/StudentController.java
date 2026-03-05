@@ -72,16 +72,17 @@ public class StudentController {
     }
 
     @PostMapping("/{id}/photo")
-    public ResponseEntity<String> uploadPhoto(@PathVariable Long id,
-                                               @RequestParam("file") MultipartFile file) throws IOException {
-        String uploadDir = "uploads/photos/";
-        Files.createDirectories(Paths.get(uploadDir));
-
-        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path path = Paths.get(uploadDir + filename);
-        Files.write(path, file.getBytes());
-
-        studentService.updatePhoto(id, path.toString());
-        return ResponseEntity.ok(path.toString());
-    }
+public ResponseEntity<String> uploadPhoto(@PathVariable Long id,
+                                           @RequestParam("file") MultipartFile file) throws IOException {
+    String uploadDir = "uploads/photos/";
+    Files.createDirectories(Paths.get(uploadDir));
+    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    Path path = Paths.get(uploadDir + filename);
+    Files.write(path, file.getBytes());
+    
+    // Zamijeni backslash sa forward slash
+    String photoPath = path.toString().replace("\\", "/");
+    studentService.updatePhoto(id, photoPath);
+    return ResponseEntity.ok(photoPath);
+}
 }

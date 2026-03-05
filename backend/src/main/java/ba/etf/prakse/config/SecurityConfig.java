@@ -39,6 +39,8 @@ public class SecurityConfig {
                         // Javni endpointi - dostupni bez tokena
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/rss/**").permitAll()
+			.requestMatchers("/uploads/**").permitAll()
+
                         // Studenti
                         .requestMatchers("/api/students/**").hasAnyRole("STUDENT", "FACULTY")
                         .requestMatchers("/api/cv/**").hasRole("STUDENT")

@@ -7,6 +7,28 @@
     </button>
   </div>
 
+  <!-- Foto upload -->
+  <mat-card class="photo-card">
+    <mat-card-content>
+      <div class="photo-section">
+        <div class="photo-preview">
+          <img *ngIf="photoUrl" [src]="photoUrl" alt="Profilna slika">
+          <mat-icon *ngIf="!photoUrl">person</mat-icon>
+        </div>
+        <div class="photo-info">
+          <h3>Profilna slika</h3>
+          <p>{{ student?.firstName }} {{ student?.lastName }}</p>
+          <p class="email">{{ student?.email }}</p>
+          <button mat-stroked-button color="primary" (click)="fileInput.click()">
+            <mat-icon>upload</mat-icon>
+            {{ photoUrl ? 'Promijeni sliku' : 'Dodaj sliku' }}
+          </button>
+          <input #fileInput type="file" accept="image/*" hidden (change)="onPhotoSelected($event)">
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
   <!-- Forma za dodavanje/editovanje -->
   <mat-card class="form-card" *ngIf="showForm">
     <mat-card-header>
@@ -75,7 +97,6 @@
 
   <!-- CV sekcije -->
   <div *ngIf="!loading" class="cv-sections">
-
     <mat-card class="section-card" *ngFor="let type of types">
       <mat-card-header>
         <mat-icon mat-card-avatar>
@@ -85,6 +106,7 @@
              type.value === 'SKILL' ? 'code' : 'favorite' }}
         </mat-icon>
         <mat-card-title>{{ type.label }}</mat-card-title>
+        <mat-card-subtitle>{{ getEntriesByType(type.value).length }} stavki</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
@@ -105,14 +127,3 @@
           <div class="entry-actions">
             <button mat-icon-button color="primary" (click)="openForm(entry)">
               <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="delete(entry.id!)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-  </div>
-</div>

@@ -50,6 +50,7 @@ export class CvEditor implements OnInit {
   loading = false;
   showForm = false;
   editingEntry: CvEntry | null = null;
+  photoUrl: string | null = null;
 
   entryForm: FormGroup;
 
@@ -91,6 +92,9 @@ export class CvEditor implements OnInit {
       next: (student) => {
         this.student = student;
         this.studentId = student.id;
+        if (student.photoPath) {
+          this.photoUrl = 'http://localhost:8080/' + student.photoPath;
+        }
         this.loadCvEntries();
       }
     });
@@ -161,6 +165,23 @@ export class CvEditor implements OnInit {
         this.snackBar.open('Stavka obrisana!', 'OK', { duration: 2000 });
         this.loadCvEntries();
       }
+    });
+  }
+
+  onPhotoSelected(event: any): void {
+    const file = event.target.files[0];
+    if (!file || !this.studentId) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.photoUrl = e.target?.result as string;
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(file);
+
+    this.studentService.uploadPhoto(this.studentId, file).subscribe({
+      next: () => this.snackBar.open('Slika uspješno uploadovana!', 'OK', { duration: 2000 }),
+      error: () => this.snackBar.open('Greška pri uploadu slike.', 'OK', { duration: 2000 })
     });
   }
 
