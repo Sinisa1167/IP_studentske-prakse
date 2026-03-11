@@ -1,0 +1,93 @@
+body {
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.stat-card .card-body {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon .material-icons {
+    font-size: 1.8rem;
+    color: white;
+}
+
+.stat-icon.blue { background: #1565c0; }
+.stat-icon.green { background: #2e7d32; }
+.stat-icon.orange { background: #e65100; }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212121;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #757575;
+    margin-top: 4px;
+}
+
+.page-title {
+    color: #1565c0;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #424242;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.btn-action {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+}
+
+.search-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.nav-link .material-icons {
+    font-size: 1.1rem;
+    vertical-align: middle;
+}
+
+@media (max-width: 576px) {
+    .page-title { font-size: 1.2rem; }
+    .card-body { padding: 12px; }
+    .table td, .table th { padding: 8px 6px; font-size: 0.85rem; }
+    .stat-number { font-size: 1.5rem; }
+}

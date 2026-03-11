@@ -36,19 +36,20 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Javni endpointi - dostupni bez tokena
+                        // Javni endpointi
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/rss/**").permitAll()
 			.requestMatchers("/uploads/**").permitAll()
 
                         // Studenti
-                        .requestMatchers("/api/students/**").hasAnyRole("STUDENT", "FACULTY")
-                        .requestMatchers("/api/cv/**").hasRole("STUDENT")
+                        .requestMatchers("/api/students/**").hasAnyRole("STUDENT", "FACULTY", "COMPANY")
+                        .requestMatchers("/api/cv/**").hasAnyRole("STUDENT", "FACULTY", "COMPANY")
                         .requestMatchers("/api/diary/**").hasAnyRole("STUDENT", "FACULTY", "COMPANY")
                         .requestMatchers("/api/recommendations/**").hasRole("STUDENT")
                         // Kompanije
                         .requestMatchers("/api/companies/**").hasAnyRole("FACULTY", "COMPANY")
                         .requestMatchers("/api/internships/**").hasAnyRole("STUDENT", "FACULTY", "COMPANY")
+			.requestMatchers("/api/users/**").hasAnyRole("STUDENT", "FACULTY", "COMPANY")
                         // Prijave
                         .requestMatchers("/api/applications/**").hasAnyRole("STUDENT", "FACULTY", "COMPANY")
                         // Ocjenjivanje
