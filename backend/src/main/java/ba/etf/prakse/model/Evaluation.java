@@ -3,6 +3,7 @@ package ba.etf.prakse.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import jakarta.persistence.PrePersist;
 
 @Entity
 @Table(name = "evaluations")
@@ -28,5 +29,10 @@ public class Evaluation {
     private String comment;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+private LocalDateTime createdAt;
+
+@PrePersist
+protected void onCreate() {
+    if (createdAt == null) createdAt = LocalDateTime.now();
+}
 }

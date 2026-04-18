@@ -4,67 +4,117 @@
 }
 
 .sidenav {
-  width: 240px;
   background: #1565c0;
-  overflow-x: hidden !important;
+  overflow: hidden !important;
+  transition: width 0.3s ease;
+  border-right: none !important;
+
+  mat-nav-list {
+    overflow-x: hidden;
+    width: 100%;
+    padding-top: 8px;
+  }
 
   .logo-section {
-    padding: 20px 16px;
+    padding: 16px;
     border-bottom: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 64px;
+    overflow: hidden;
 
-    h2 {
+    &.collapsed {
+      justify-content: center;
+      padding: 16px 8px;
+    }
+
+    .logo-icon {
       color: white;
-      margin: 0;
-      font-size: 1.1rem;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      color: white;
+      font-size: 0.95rem;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
+      transition: opacity 0.2s ease, width 0.3s ease;
+      opacity: 1;
+
+      &.hidden {
+        opacity: 0;
+        width: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
+  .nav-item {
+    color: rgba(255,255,255,0.85);
+    border-radius: 8px;
+    margin: 2px 8px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
+    overflow: hidden;
+
+    &:hover {
+      background: rgba(255,255,255,0.15);
+      color: white;
     }
 
-    p {
-      color: rgba(255,255,255,0.7);
-      margin: 4px 0 0;
-      font-size: 0.8rem;
+    &.active-link {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-weight: 600;
+    }
+
+    mat-icon {
+      color: rgba(255,255,255,0.9);
+      flex-shrink: 0;
+    }
+
+    ::ng-deep .mdc-list-item__content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 !important;
+    }
+
+    ::ng-deep .mdc-list-item__primary-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .nav-label {
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
+      font-size: 0.9rem;
+      transition: opacity 0.2s ease, width 0.3s ease;
+      opacity: 1;
 
-  mat-nav-list {
-    padding-top: 8px;
-
-    a {
-      color: rgba(255,255,255,0.85);
-      border-radius: 8px;
-      margin: 2px 8px;
-      height: 48px;
-
-      &:hover {
-        background: rgba(255,255,255,0.15);
-        color: white;
-      }
-
-      &.active-link {
-        background: rgba(255,255,255,0.2);
-        color: white;
-        font-weight: 600;
-      }
-
-      mat-icon {
-        color: rgba(255,255,255,0.85);
-        margin-right: 12px;
-        flex-shrink: 0;
-      }
-
-      span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      &.hidden {
+        opacity: 0;
+        width: 0;
+        pointer-events: none;
       }
     }
   }
+}
+
+mat-sidenav-content {
+  transition: margin-left 0.3s ease;
 }
 
 .toolbar {
@@ -75,10 +125,9 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  height: 64px;
 
-  .toolbar-spacer {
-    flex: 1;
-  }
+  .toolbar-spacer { flex: 1; }
 
   .username {
     font-size: 0.9rem;
@@ -87,13 +136,13 @@
   }
 }
 
+.toggle-btn {
+  color: #1565c0 !important;
+}
+
 .content {
   padding: 24px;
   background: #f5f7fa;
   min-height: calc(100vh - 64px);
   overflow-x: hidden;
-}
-
-.toggle-btn {
-  color: #1565c0 !important;
 }

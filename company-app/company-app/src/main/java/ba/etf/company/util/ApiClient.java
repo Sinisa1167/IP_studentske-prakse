@@ -44,6 +44,19 @@ public class ApiClient {
         }
     }
 
+    public static String postChecked(String endpoint, Object body, String token) throws IOException {
+        String json = mapper.writeValueAsString(body);
+        RequestBody requestBody = RequestBody.create(json, JSON);
+        Request.Builder builder = new Request.Builder()
+                .url(BASE_URL + endpoint)
+                .post(requestBody);
+        if (token != null) builder.header("Authorization", "Bearer " + token);
+        try (Response response = client.newCall(builder.build()).execute()) {
+            String responseBody = response.body() != null ? response.body().string() : "";
+            return responseBody;
+        }
+    }
+
     public static String put(String endpoint, Object body, String token) throws IOException {
         String json = mapper.writeValueAsString(body);
         RequestBody requestBody = RequestBody.create(json, JSON);

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +19,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -42,17 +42,16 @@ export class InternshipDetail implements OnInit {
     private studentService: StudentService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     const userId = this.authService.getUserId();
-
     this.studentService.getByUserId(userId).subscribe({
       next: (student) => {
         this.studentId = student.id;
-
         this.internshipService.getStudentApplications(student.id).subscribe({
           next: (apps) => {
             this.alreadyApplied = apps.some(a => a.internship?.id === id);
@@ -61,7 +60,6 @@ export class InternshipDetail implements OnInit {
         });
       }
     });
-
     this.internshipService.getById(id).subscribe({
       next: (internship) => {
         this.internship = internship;
@@ -70,10 +68,13 @@ export class InternshipDetail implements OnInit {
     });
   }
 
+  goBack(): void {
+    this.location.back();
+  }
+
   apply(): void {
     if (!this.studentId || !this.internship) return;
     this.applying = true;
-
     this.internshipService.apply(this.studentId, this.internship.id).subscribe({
       next: () => {
         this.alreadyApplied = true;

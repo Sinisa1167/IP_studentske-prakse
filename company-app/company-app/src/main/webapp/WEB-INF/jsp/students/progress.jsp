@@ -24,11 +24,26 @@
     </h2>
 </div>
 
-<% for (JsonNode app : applications) {
-    String status = app.path("status").asText();
-    String internshipTitle = app.path("internship").path("title").asText();
-    Long appId = app.path("id").asLong();
-    Long internshipId = app.path("internship").path("id").asLong();
+<% for (JsonNode appNode : applications) {
+    String status = appNode.path("status").asText();
+    String internshipTitle = appNode.path("internship").path("title").asText();
+    Long appId = appNode.path("id").asLong();
+    Long internshipId = appNode.path("internship").path("id").asLong();
+
+    String diaryJson = ba.etf.company.util.ApiClient.get(
+            "/diary/student/" + student.getId() + "/internship/" + internshipId, token);
+    JsonNode diaryEntries = mapper.readTree(diaryJson);
+
+    String evalsJson = ba.etf.company.util.ApiClient.get(
+            "/evaluations/application/" + appId, token);
+    JsonNode evals = mapper.readTree(evalsJson);
+
+    boolean hasCompanyEval = false;
+    for (JsonNode eval : evals) {
+        if ("COMPANY".equals(eval.path("evaluatorRole").asText())) {
+            hasCompanyEval = true;
+        }
+    }
 %>
 <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -39,13 +54,9 @@
     </div>
     <div class="card-body">
         <div class="row g-3">
+
             <div class="col-12 col-md-6">
                 <h6><span class="material-icons align-middle" style="font-size:1rem">book</span> Dnevnik rada</h6>
-                <%
-                    String diaryJson = ba.etf.company.util.ApiClient.get(
-                            "/diary/student/" + student.getId() + "/internship/" + internshipId, token);
-                    JsonNode diaryEntries = mapper.readTree(diaryJson);
-                %>
                 <% if (diaryEntries.size() == 0) { %>
                 <p class="text-muted small">Nema unosa</p>
                 <% } else { %>
@@ -62,25 +73,23 @@
 
             <div class="col-12 col-md-6">
                 <h6><span class="material-icons align-middle" style="font-size:1rem">grade</span> Ocjene</h6>
-                <%
-                    String evalsJson = ba.etf.company.util.ApiClient.get(
-                            "/evaluations/application/" + appId, token);
-                    JsonNode evals = mapper.readTree(evalsJson);
-                %>
-                <% for (JsonNode eval : evals) { %>
+
+                <% for (JsonNode eval : evals) {
+                    if ("COMPANY".equals(eval.path("evaluatorRole").asText())) { %>
                 <div class="d-flex justify-content-between mb-1">
-                        <span class="badge bg-secondary">
-                            <%= "FACULTY".equals(eval.path("evaluatorRole").asText()) ? "Fakultet" : "Kompanija" %>
-                        </span>
+                    <span class="badge bg-secondary">Kompanija</span>
                     <span class="fw-bold text-success"><%= eval.path("grade").asInt() %>/10</span>
                 </div>
                 <p class="small text-muted"><%= eval.path("comment").asText() %></p>
-                <% } %>
+                <%  }
+                } %>
 
-                <% if ("ACCEPTED".equals(status)) { %>
+                <% if ("ACCEPTED".equals(status) && !hasCompanyEval) { %>
                 <hr>
                 <h6 class="small">Dodaj ocjenu</h6>
-                <form method="post" action="<%= request.getContextPath() %>/evaluations/<%= appId %>">
+                <form method="post"
+                      action="<%= request.getContextPath() %>/students/<%= student.getId() %>/progress/evaluate">
+                    <input type="hidden" name="applicationId" value="<%= appId %>">
                     <div class="mb-2">
                         <input type="number" name="grade" class="form-control form-control-sm"
                                placeholder="Ocjena (1-10)" min="1" max="10" required>
@@ -94,8 +103,14 @@
                         Sačuvaj ocjenu
                     </button>
                 </form>
+                <% } else if (hasCompanyEval) { %>
+                <p class="text-muted small mt-2">
+                    <span class="material-icons align-middle" style="font-size:1rem">check_circle</span>
+                    Ocjena već unesena.
+                </p>
                 <% } %>
             </div>
+
         </div>
     </div>
 </div>
@@ -105,7 +120,7 @@
 <div class="card">
     <div class="card-body text-center py-4 text-muted">
         <span class="material-icons" style="font-size:3rem">assignment</span>
-        <p>Student nema prijava.</p>
+        <p>Student nema prijava na prakse ove kompanije.</p>
     </div>
 </div>
 <% } %>

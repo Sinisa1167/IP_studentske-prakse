@@ -42,11 +42,13 @@
             <mat-select formControlName="type">
               <mat-option *ngFor="let t of types" [value]="t.value">{{ t.label }}</mat-option>
             </mat-select>
+            <mat-error *ngIf="entryForm.get('type')?.hasError('required')">Tip je obavezan</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Naziv</mat-label>
             <input matInput formControlName="title" placeholder="npr. Elektrotehnički fakultet">
+            <mat-error *ngIf="entryForm.get('title')?.hasError('required')">Naziv je obavezan</mat-error>
           </mat-form-field>
         </div>
 
@@ -127,3 +129,13 @@
           <div class="entry-actions">
             <button mat-icon-button color="primary" (click)="openForm(entry)">
               <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="delete(entry.id!)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

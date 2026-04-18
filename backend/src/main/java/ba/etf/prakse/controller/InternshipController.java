@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/internships")
@@ -57,19 +56,31 @@ public class InternshipController {
     @PostMapping("/company/{companyId}")
     public ResponseEntity<Internship> create(
             @PathVariable Long companyId,
-            @RequestBody Map<String, Object> body) {
+            @RequestBody InternshipRequest request) {
 
         Internship internship = new Internship();
-        // Mapiranje se radi u servisu, ovdje samo prosljeđujemo
-        return ResponseEntity.ok(internshipService.create(companyId, internship, null));
+        internship.setTitle(request.getTitle());
+        internship.setDescription(request.getDescription());
+        internship.setStartDate(request.getStartDate());
+        internship.setEndDate(request.getEndDate());
+        internship.setConditions(request.getConditions());
+
+        return ResponseEntity.ok(internshipService.create(companyId, internship, request.getTechnologyIds()));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Internship> update(
             @PathVariable Long id,
-            @RequestBody Internship internship,
-            @RequestParam(required = false) List<Long> technologyIds) {
-        return ResponseEntity.ok(internshipService.update(id, internship, technologyIds));
+            @RequestBody InternshipRequest request) {
+
+        Internship internship = new Internship();
+        internship.setTitle(request.getTitle());
+        internship.setDescription(request.getDescription());
+        internship.setStartDate(request.getStartDate());
+        internship.setEndDate(request.getEndDate());
+        internship.setConditions(request.getConditions());
+
+        return ResponseEntity.ok(internshipService.update(id, internship, request.getTechnologyIds()));
     }
 
     @PatchMapping("/{id}/deactivate")
@@ -81,5 +92,16 @@ public class InternshipController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         internshipService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Inner DTO klasa
+    @lombok.Data
+    public static class InternshipRequest {
+        private String title;
+        private String description;
+        private java.time.LocalDate startDate;
+        private java.time.LocalDate endDate;
+        private String conditions;
+        private List<Long> technologyIds;
     }
 }

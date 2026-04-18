@@ -84,23 +84,29 @@
                             "/evaluations/application/" + appId,
                             (String) request.getAttribute("token"));
                     JsonNode evals = mapper.readTree(evalsJson);
+
+                    boolean hasFacultyEval = false;
+                    for (JsonNode eval : evals) {
+                        if ("FACULTY".equals(eval.path("evaluatorRole").asText())) {
+                            hasFacultyEval = true;
+                        }
+                    }
                 %>
                 <% if (evals.size() == 0) { %>
                 <p class="text-muted small">Nema ocjena</p>
                 <% } else { %>
                 <% for (JsonNode eval : evals) { %>
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-secondary">
-                                <%= "FACULTY".equals(eval.path("evaluatorRole").asText()) ? "Fakultet" : "Kompanija" %>
-                            </span>
+        <span class="badge bg-secondary">
+            <%= "FACULTY".equals(eval.path("evaluatorRole").asText()) ? "Fakultet" : "Kompanija" %>
+        </span>
                     <span class="fw-bold text-primary"><%= eval.path("grade").asInt() %>/10</span>
                 </div>
                 <p class="small text-muted"><%= eval.path("comment").asText() %></p>
                 <% } %>
                 <% } %>
 
-                <!-- Forma za ocjenu -->
-                <% if ("ACCEPTED".equals(status)) { %>
+                <% if ("ACCEPTED".equals(status) && !hasFacultyEval) { %>
                 <hr>
                 <h6 class="small">Dodaj ocjenu</h6>
                 <form method="post" action="<%= request.getContextPath() %>/evaluations/<%= appId %>">
@@ -109,8 +115,8 @@
                                placeholder="Ocjena (1-10)" min="1" max="10" required>
                     </div>
                     <div class="mb-2">
-                        <textarea name="comment" class="form-control form-control-sm"
-                                  placeholder="Komentar" rows="2"></textarea>
+            <textarea name="comment" class="form-control form-control-sm"
+                      placeholder="Komentar" rows="2"></textarea>
                     </div>
                     <input type="hidden" name="evaluatorRole" value="FACULTY">
                     <button type="submit" class="btn btn-sm btn-primary w-100">
@@ -118,6 +124,11 @@
                         Sačuvaj ocjenu
                     </button>
                 </form>
+                <% } else if (hasFacultyEval) { %>
+                <p class="text-muted small mt-2">
+                    <span class="material-icons align-middle" style="font-size:1rem">check_circle</span>
+                    Ocjena već unesena.
+                </p>
                 <% } %>
             </div>
         </div>

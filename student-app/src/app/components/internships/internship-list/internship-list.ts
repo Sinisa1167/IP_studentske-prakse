@@ -14,13 +14,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { InternshipService } from '../../../services/internship';
 import { Internship, Technology } from '../../../models/internship.model';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-internship-list',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
     MatTableModule,
     MatPaginatorModule,
@@ -37,20 +37,23 @@ import { HttpClient } from '@angular/common/http';
 })
 export class InternshipList implements OnInit {
   internships: Internship[] = [];
+  allInternships: Internship[] = [];
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
   searchTerm = '';
   selectedTechId: number | null = null;
+  selectedCompanyId: number | null = null;
   technologies: Technology[] = [];
+  companies: { id: number; name: string }[] = [];
   loading = false;
-
-  displayedColumns = ['title', 'company', 'technologies', 'startDate', 'endDate', 'actions'];
+  displayedColumns = ['title', 'company', 'technologies', 'startDate', 'endDate'];
 
   constructor(
     private internshipService: InternshipService,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -64,43 +67,85 @@ export class InternshipList implements OnInit {
     });
   }
 
+
   loadInternships(): void {
-    this.loading = true;
-    this.internshipService.getAll(
-      this.pageIndex,
-      this.pageSize,
-      this.searchTerm || undefined,
-      this.selectedTechId || undefined
-    ).subscribe({
-      next: (page) => {
-        this.internships = page.content;
-        this.totalElements = page.totalElements;
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: () => this.loading = false
-    });
+  this.loading = true;
+  this.internshipService.getAll(0, 1000, undefined, undefined).subscribe({
+    next: (page) => {
+      this.allInternships = page.content;
+
+      // Izvuci unikatne kompanije iz praksi
+      const companyMap = new Map<number, string>();
+      page.content.forEach((i: Internship) => {
+        if (i.company?.id) companyMap.set(i.company.id, i.company.name);
+      });
+      this.companies = Array.from(companyMap.entries())
+        .map(([id, name]) => ({ id, name }));
+
+      this.applyFilters();
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => this.loading = false
+  });
+}
+
+  applyFilters(): void {
+  let filtered = [...this.allInternships];
+
+  // Pretraga po nazivu
+  if (this.searchTerm?.trim()) {
+    const term = this.searchTerm.toLowerCase();
+    filtered = filtered.filter(i =>
+      i.title.toLowerCase().includes(term) ||
+      i.company?.name.toLowerCase().includes(term) ||
+      i.technologies?.some(t => t.name.toLowerCase().includes(term))
+    );
   }
+
+  // Filter po tehnologiji
+  if (this.selectedTechId) {
+    filtered = filtered.filter(i =>
+      i.technologies?.some(t => t.id === this.selectedTechId)
+    );
+  }
+
+  // Filter po kompaniji
+  if (this.selectedCompanyId) {
+    filtered = filtered.filter(i => i.company?.id === this.selectedCompanyId);
+  }
+
+  this.totalElements = filtered.length;
+  const start = this.pageIndex * this.pageSize;
+  this.internships = filtered.slice(start, start + this.pageSize);
+  this.cdr.detectChanges();
+}
 
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadInternships();
+    this.applyFilters();
   }
 
   onSearch(): void {
-    this.pageIndex = 0;
-    this.loadInternships();
-  }
+  this.pageIndex = 0;
+  this.applyFilters();
+}
 
   onTechFilter(): void {
     this.pageIndex = 0;
     this.loadInternships();
   }
 
+  onCompanyFilter(): void {
+    this.pageIndex = 0;
+    this.applyFilters();
+  }
+
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedTechId = null;
+    this.selectedCompanyId = null;
     this.pageIndex = 0;
     this.loadInternships();
   }
